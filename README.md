@@ -127,3 +127,25 @@ python3 score.py --pred 제출파일.csv --truth private/test.csv
 ```
 
 학생 저장소에는 `private/test.csv`가 없습니다.
+
+## 예시 두 개
+
+둘 다 검증 목록을 읽고, 같은 형식의 CSV를 만듭니다. 점수가 높지 않아도 됩니다. 내는 파일 모양만 같으면 됩니다.
+
+규칙을 쓰는 예는 멜 에너지, 스펙트럼 중심, 평탄도, RMS, 영교차율처럼 듣는 감각에 쓰는 숫자를 뽑습니다. 그다음 `examples/mel_rules.py` 안에서 그 숫자가 얼마 이상인지, 얼마 이하인지만 봅니다. 그 파일은 `if / elif / else`만 아주 길게 있습니다. 실행은 짧은 쪽만 하면 됩니다.
+
+```bash
+pip install numpy soundfile
+python3 examples/classify_rules.py
+```
+
+결과 파일은 `predictions_rules.csv`입니다.
+
+작은 CNN 예는 아래입니다. 학습 16개로 잠깐 맞춘 뒤 검증 16개의 예측을 적습니다.
+
+```bash
+pip install torch soundfile
+python3 examples/cnn.py
+```
+
+결과 파일은 `predictions_cnn.csv`입니다. 첫 줄은 둘 다 `filename,pred_label`입니다.

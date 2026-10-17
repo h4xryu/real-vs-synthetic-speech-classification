@@ -1,5 +1,7 @@
 private/
 make_splits.py
+predictions_rules.csv
+predictions_cnn.csv
 __pycache__/
 .DS_Store
 *.pyc

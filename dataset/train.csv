@@ -1,0 +1,17 @@
+path,label,speaker_id,sampling_rate,duration_sec
+audio/tr_0001.flac,TTS,LA_0079,16000,5.890
+audio/tr_0002.flac,original,LA_0079,16000,2.510
+audio/tr_0003.flac,sovits,LA_0079,16000,2.500
+audio/tr_0004.flac,voice_conversion,LA_0079,16000,4.600
+audio/tr_0005.flac,TTS,LA_0085,16000,3.490
+audio/tr_0006.flac,original,LA_0085,16000,3.970
+audio/tr_0007.flac,sovits,LA_0085,16000,2.420
+audio/tr_0008.flac,voice_conversion,LA_0085,16000,4.570
+audio/tr_0009.flac,TTS,LA_0092,16000,2.160
+audio/tr_0010.flac,original,LA_0092,16000,4.520
+audio/tr_0011.flac,sovits,LA_0092,16000,2.260
+audio/tr_0012.flac,voice_conversion,LA_0092,16000,3.030
+audio/tr_0013.flac,TTS,LA_0098,16000,2.610
+audio/tr_0014.flac,original,LA_0098,16000,2.040
+audio/tr_0015.flac,sovits,LA_0098,16000,3.020
+audio/tr_0016.flac,voice_conversion,LA_0098,16000,2.340

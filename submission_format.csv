@@ -1,0 +1,5 @@
+filename,pred_label
+tr_0001.flac,original
+tr_0002.flac,TTS
+tr_0003.flac,voice_conversion
+tr_0004.flac,sovits

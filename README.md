@@ -1,38 +1,68 @@
 # Real vs Synthetic Speech Classification
 
-음성 파일을 딥러닝이나 머신러닝으로, **사람이 실제로 녹음한 목소리**인지 **프로그램이 만든 목소리**인지 맞히는 과제입니다.
+음성 파일을 듣고, **사람이 실제로 녹음한 목소리**인지 **프로그램이 만든 목소리**인지 맞히는 과제입니다.
+
+모델을 새로 만들어도 되고, 이미 있는 머신러닝이나 딥러닝 코드를 고쳐 써도 됩니다. 사용 언어와 라이브러리는 자유입니다. 마지막에 내는 파일 형식만 아래와 같으면 됩니다.
 
 ## 맞혀야 하는 것
 
-정답은 네 가지 중 하나입니다.
+정답은 네 가지 중 하나입니다. 철자가 다르면 오답입니다.
 
-| 라벨명 | 뜻 |
-|---|---|
-| `original` | 사람이 실제로 녹음한 목소리 |
-| `TTS` | 글자를 음성으로 읽어 만든 목소리 |
+| 적을 말              | 뜻                                              |
+| -------------------- | ----------------------------------------------- |
+| `original`         | 사람이 실제로 녹음한 목소리                     |
+| `TTS`              | 글자를 음성으로 읽어 만든 목소리                |
 | `voice_conversion` | 다른 사람 목소리를 이 화자처럼 바꿔 만든 목소리 |
-| `sovits` | 그 화자 목소리로 짧게 학습한 뒤 만든 목소리 |
+| `sovits`           | 해당 화자 목소리로 짧게 학습한 뒤 만든 목소리   |
 
-`speaker_id`는 누구의 목소리인지만 알려 줍니다. 정답이 아닙니다. 같은 사람의 실제 녹음과 만든 목소리가 함께 들어 있습니다. 문장 내용은 파일마다 다릅니다. 즉 학생들은 **목소리가 어떻게 만들어졌는지**를 맞히면 됩니다.
+ |
 
-## 받은 파일
+`speaker_id`는 누구의 목소리인지만 알려 줍니다. 정답이 아닙니다. 같은 사람의 실제 녹음과 만든 목소리가 함께 들어 있습니다. 문장 내용은 파일마다 다릅니다. 문장이 아니라 **목소리가 어떻게 만들어졌는지**를 맞히면 됩니다.
+
+## 파일 목록
 
 ```text
+requirements.txt         필요한 라이브러리와 버전
 dataset/
-  train.csv          학습용 목록. 정답이 적혀 있습니다.
-  valid.csv          검증용 목록. 정답이 적혀 있습니다.
-  audio/             위 목록의 음성 파일
+  train.csv              학습용 목록. 정답이 적혀 있습니다.
+  valid.csv              검증용 목록. 정답이 적혀 있습니다.
+  audio/                 위 목록의 음성 파일
+examples/
+  common.py              목록 읽기, 예측 CSV 쓰기, 점수 계산 유틸을 모아놓은 파일
+  DNN/
+    models.py            입력 만들기(로그 스펙트로그램)와 모델 구조
+    train.py             학습 → model_weight.pt 저장
+    validation.py        model_weight.pt 로 valid 점수 확인 (제출하면 predict.py)
+  Rule-based/
+    features.py          멜 에너지와 청각 특징 33개 (아래 셋이 함께 씀)
+    rules/ifelse.py      사람이 짠 if / elif / else 규칙
+    svm.py               SVM 학습 → svm.joblib 저장
+    randomforest.py      랜덤 포레스트 학습 → randomforest.joblib 저장
+    validation.py        METHOD 로 고른 분류기로 valid 점수 확인 (제출하면 predict.py)
 ```
 
-평가용 음성은 학생에게 제공되지 않습니다. 조교가 평가를 진행합니다.
+테스트 음성은 이 저장소에 없습니다. 조교가 가지고 있으며, 여러분이 낸 코드를 조교가 테스트 음성에 돌려 채점합니다.
 
-데이터는 화자 기준으로 나뉩니다. 학습, 검증, 평가에 같은 화자가 겹치지 않습니다. 화자 한 명당 `original`, `TTS`, `voice_conversion`, `sovits`가 3개씩, 모두 12개입니다. 이 저장소에 올린 음성은 학습 120개와 검증 120개입니다.
+| 파일  | 화자 수 | 정답               |
+| ----- | ------- | ------------------ |
+| train | 10명    | 있음               |
+| valid | 10명    | 있음               |
+| test  | 20명    | 조교만 가지고 있음 |
 
-| 구분 | 화자 수 | 음성 수 | 정답 |
-|---|---|---|---|
-| 학습 (`train`) | 10명 | 120개 | 있음 |
-| 검증 (`valid`) | 10명 | 120개 | 있음 |
-| 평가 | 20명 | 240개 | 비공개. 이 저장소에는 없습니다. |
+학습, 검증 모두 화자 10명, 라벨 4개가 각각 30개씩 들어 있습니다.
+
+## 환경 준비
+
+어느 컴퓨터든 아래 순서대로 하면 실행가능한 환경이 됩니다. Python 3.10 ~ 3.13 (권장 3.12)이 필요합니다.
+
+```bash
+python -m venv .venv
+# Windows:      .venv\Scripts\activate
+# macOS/Linux:  source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+`requirements.txt`의 버전을 바꾸지 마세요. 버전이 다르면 저장한 가중치(`.joblib`, `.pt`)가 조교 컴퓨터에서 안 열릴 수 있습니다. 다른 라이브러리가 꼭 필요하면 조교에게 먼저 물어보세요.
 
 ## CSV 읽는 법
 
@@ -40,13 +70,13 @@ dataset/
 
 `train.csv`와 `valid.csv`의 열은 같습니다.
 
-| 열 이름 | 예시 | 설명 |
-|---|---|---|
-| `path` | `audio/tr_0001.flac` | `dataset` 폴더 안에서 음성 파일의 위치 |
-| `label` | `original` | 정답 |
-| `speaker_id` | `LA_0085` | 화자 번호 |
-| `sampling_rate` | `16000` | 1초에 16000번 샘플링된 소리 |
-| `duration_sec` | `4.604` | 길이(초) |
+| 열 이름           | 예시                   | 설명                                     |
+| ----------------- | ---------------------- | ---------------------------------------- |
+| `path`          | `audio/tr_0001.flac` | `dataset` 폴더 안에서 음성 파일의 위치 |
+| `label`         | `TTS`                | 정답                                     |
+| `speaker_id`    | `LA_0079`            | 화자 번호                                |
+| `sampling_rate` | `16000`              | 1초에 16000번 샘플링된 소리              |
+| `duration_sec`  | `5.890`              | 길이(초)                                 |
 
 음성은 모두 16 kHz, 모노, FLAC입니다. 길이는 파일마다 다릅니다.
 
@@ -60,7 +90,7 @@ print(train.head())
 print(train["label"].value_counts())
 ```
 
-`pandas`가 없으면 터미널에서 `pip install pandas`를 한 번 실행합니다.
+`pandas`는 위 환경 준비에서 함께 설치됩니다.
 
 음성 하나를 들으려면 `dataset/audio/tr_0001.flac`를 그대로 재생하면 됩니다.
 
@@ -68,50 +98,103 @@ print(train["label"].value_counts())
 
 - **train**: 모델을 만들 때 사용합니다.
 - **valid**: 만든 모델이 새 음성에도 맞는지 확인할 때 사용합니다. 여기 점수를 보고 모델을 고칩니다.
-- **평가 데이터**: 학생에게 공개되지 않습니다. 조교가 제출된 예측 코드로 평가합니다.
+- **test**: 조교가 여러분의 코드로 한 번만 돌립니다. 여러분은 볼 수 없습니다.
 
-검증에서 잘 맞았다고 평가에서도 같지는 않습니다. 검증 점수는 학생이 모델을 점검하고 개선하는 데 사용합니다.
+검증에서 잘 맞았다고 테스트에서도 같지는 않습니다. 검증 점수는 내 점검용입니다.
 
-## 제출할 예측 코드
+## 예시 예측 코드
 
-학생은 조교에게 **자신이 작성한 예측 코드 파일 한 개(`.py`)만** 제출합니다. `if / else` 규칙, 머신러닝, CNN·DNN 등 어떤 방법을 사용해도 됩니다. 코드는 음성 목록을 입력으로 받아, 목록에 있는 각 음성에 대해 위 네 가지 라벨 중 하나를 예측하도록 작성합니다. 입력과 예측 결과의 형태는 아래 예시 코드와 같은 방식으로 맞춰 주세요.
+### DNN (딥러닝)
 
-학생은 `train.csv`의 정답과 음성을 이용해 규칙을 만들거나 모델을 학습하고, `valid.csv`에 적용해 성능을 확인합니다. 예시 코드처럼 valid의 예측 결과를 정답과 비교해 모델을 개선하면 됩니다. **valid로 성능을 확인하는 것은 학생이 직접 합니다.**
+로그 스펙트로그램을 작은 1D CNN에 넣습니다.
 
-평가 음성과 정답은 비공개입니다. 학생은 예측 코드 `.py` 파일 한 개만 제출하고, 조교가 그 코드를 평가 데이터에 실행해 결과를 리더보드에 올립니다. 평가용 예측 결과 파일을 별도로 제출하지 않습니다.
+```bash
+python examples/DNN/train.py         # examples/DNN/model_weight.pt 저장
+python examples/DNN/validation.py    # valid 점수
+```
+
+모델을 바꾸려면 `models.py`의 `SmallCNN`을, 학습 설정은 `train.py`의 `EPOCHS`, `LR`을 고칩니다.
+
+### Rule-based (규칙 기반 분류)
+
+`features.py`가 뽑는 특징 33개를 세 가지 방법으로 분류합니다. 같은 특징으로 사람이 규칙을 짜는 것과 기계가 경계를 찾는 것을 비교해 볼 수 있습니다. 특징의 뜻은 `rules/ifelse.py` 맨 위에 적혀 있습니다.
+
+| 방법           | 학습                                                                        | `validation.py`의 `METHOD` |
+| -------------- | --------------------------------------------------------------------------- | ------------------------------ |
+| if / else 규칙 | 없음. `rules/ifelse.py` 이건 과거 전통적 분류 방식을 이해 하기위한 예시 | `"ifelse"`                   |
+| SVM            | `python examples/Rule-based/svm.py` → `svm.joblib`                     | `"svm"`                      |
+| 랜덤 포레스트  | `python examples/Rule-based/randomforest.py` → `randomforest.joblib`   | `"randomforest"`             |
+
+```bash
+python examples/Rule-based/svm.py           # 학습
+# validation.py 맨 위를 METHOD = "svm" 으로 고친 뒤
+python examples/Rule-based/validation.py    # valid 점수
+```
+
+터미널에 이렇게 나옵니다.
+
+```text
+files       120
+accuracy    0.xxxx
+macro_f1    0.xxxx
+
+label              precision    recall        f1   support
+original              ...
+...
+
+confusion matrix (행: 정답, 열: 예측)
+                      orig     TTS      VC  sovits
+original                ..      ..      ..      ..
+...
+```
+
+혼동 행렬의 행은 정답, 열은 예측입니다. 대각선이 맞힌 개수이고, 대각선 밖을 보면 어떤 라벨끼리 헷갈리는지 알 수 있습니다.
 
 ## 점수
 
 채점 기준은 **macro F1**입니다.
 
-쉽게 말하면, 네 라벨을 각각 얼마나 맞혔는지 본 다음 그 넷의 평균입니다. 한 라벨만 잘 맞히고 나머지는 틀리면 점수가 낮아집니다. 그래서 네 종류를 고루 맞히는 편이 유리합니다.
+네 라벨을 각각 얼마나 맞혔는지(F1) 본 다음 그 넷의 평균입니다. 한 라벨만 잘 맞히고 나머지는 틀리면 점수가 낮아집니다. 그래서 네 종류를 고루 맞히는 편이 유리합니다. accuracy는 전체 중 몇 개를 맞혔는지입니다. 순위는 accuracy가 아니라 macro F1입니다.
 
-같이 나오는 accuracy는 전체 음성 중 몇 개를 맞혔는지입니다. 순위는 accuracy가 아니라 macro F1입니다.
+## 제출 규격
 
-최종 평가는 조교가 진행하며, 학생 저장소에는 평가 음성과 평가 정답이 없습니다.
+내는 것은 **폴더 하나를 묶은 zip**입니다. 폴더에는 실행 파일 `predict.py`와, 그것이 쓰는 코드·가중치 파일이 들어 있어야 합니다.
 
-## 예시 예측 코드
-
-두 예시는 서로 다른 방식의 예측 코드입니다. 둘 다 목록을 읽고 파일마다 네 가지 라벨 중 하나를 예측하므로, 자기 코드를 작성할 때도 입력과 예측 결과의 형태를 이 예시와 맞추면 됩니다. 아래 결과 파일은 valid 성능을 확인하기 위해 예시 실행 중 생성되는 것으로, 학생이 제출하는 파일이 아닙니다.
-
-규칙 기반 예시는 멜 에너지, 스펙트럼 중심, 평탄도, RMS, 영교차율 같은 값을 뽑은 뒤 `if / elif / else`로 라벨을 고릅니다. 규칙은 `examples/mel_rules.py`에 있고, 목록을 읽어 예측 CSV를 쓰는 실행 코드는 `examples/classify_rules.py`입니다.
-
-작은 CNN 예시는 학습 목록으로 모델을 맞춘 뒤 검증 음성의 예측 결과를 만듭니다.
-
-```bash
-pip install numpy soundfile
-python3 examples/classify_rules.py
-python3 score.py --pred predictions_rules.csv --truth dataset/valid.csv
+```text
+20231234_홍길동/
+  predict.py          반드시 이 이름
+  model_weight.pt     학습해 둔 가중치 (있으면)
+  models.py ...       predict.py 가 import 하는 내 코드 (있으면)
 ```
 
-예측 결과와 정답을 비교해 valid 성능을 확인합니다. CNN 예시도 같은 방식으로 확인할 수 있습니다.
-
-작은 CNN 예는 아래입니다. 학습 데이터로 모델을 맞춘 뒤 검증 데이터의 예측 성능을 확인합니다.
+조교는 이 폴더 안에서 아래 한 줄만 실행합니다.
 
 ```bash
-pip install torch soundfile
-python3 examples/cnn.py
-python3 score.py --pred predictions_cnn.csv --truth dataset/valid.csv
+python predict.py 목록.csv 예측.csv
 ```
 
-여기서 생성되는 결과 파일은 valid 성능 확인용이며, 제출하는 파일이 아닙니다. 조교가 학생의 `.py` 파일을 비공개 평가 데이터에 실행해 리더보드에 올립니다.
+- `목록.csv`: 테스트 목록. 열은 `path,speaker_id,sampling_rate,duration_sec`이고 **label 열은 없습니다.** 음성은 `목록.csv`가 있는 폴더 기준 `path` 위치에 있습니다.
+- `예측.csv`: 여기에 결과를 씁니다. 첫 줄은 `filename,pred_label`입니다.
+
+```csv
+filename,pred_label
+te_0001.flac,original
+te_0002.flac,TTS
+```
+
+| 열 이름        | 설명                                                                                                          |
+| -------------- | ------------------------------------------------------------------------------------------------------------- |
+| `filename`   | 음성 파일 이름만. 폴더 경로 없이 `te_0001.flac`                                                             |
+| `pred_label` | 맞힌 라벨. `original`, `TTS`, `voice_conversion`, `sovits` 중 하나. 철자와 대소문자까지 같아야 합니다 |
+
+지켜야 할 것:
+
+- `predict.py`는 **학습하지 않고** 저장한 가중치로 예측만 합니다. 학습은 미리 내 컴퓨터에서 끝내고 가중치 파일을 함께 넣으세요.
+- 가중치 파일은 `predict.py` 위치 기준으로 찾으세요. 예: `Path(__file__).resolve().parent / "model_weight.pt"`
+- 인터넷, `dataset/` 폴더, 다른 경로의 파일에 의존하면 안 됩니다. 필요한 건 전부 폴더 안에 넣으세요.
+
+예시의 `validation.py`는 이 규격을 지킵니다. 인자 두 개를 주면 점수 없이 예측 CSV만 씁니다. 그래서 `validation.py`를 `predict.py`로 이름만 바꿔 내면 됩니다.
+
+```bash
+python examples/DNN/validation.py dataset/valid.csv my_pred.csv
+```

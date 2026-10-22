@@ -34,9 +34,8 @@ examples/
     train.py             학습 → model_weight.pt 저장
     validation.py        model_weight.pt 로 valid 점수 확인 (제출하면 predict.py)
   Rule-based/
-    features.py          멜 에너지와 청각 특징 33개 (아래 셋이 함께 씀)
+    features.py          멜 에너지와 청각 특징 33개 
     rules/ifelse.py      사람이 짠 if / elif / else 규칙
-    svm.py               SVM 학습 → svm.joblib 저장
     randomforest.py      랜덤 포레스트 학습 → randomforest.joblib 저장
     validation.py        METHOD 로 고른 분류기로 valid 점수 확인 (제출하면 predict.py)
 ```
@@ -122,7 +121,6 @@ python examples/DNN/validation.py    # valid 점수
 | 방법           | 학습                                                                        | `validation.py`의 `METHOD` |
 | -------------- | --------------------------------------------------------------------------- | ------------------------------ |
 | if / else 규칙 | 없음. `rules/ifelse.py` 이건 과거 전통적 분류 방식을 이해 하기위한 예시 | `"ifelse"`                   |
-| SVM            | `python examples/Rule-based/svm.py` → `svm.joblib`                     | `"svm"`                      |
 | 랜덤 포레스트  | `python examples/Rule-based/randomforest.py` → `randomforest.joblib`   | `"randomforest"`             |
 
 ```bash

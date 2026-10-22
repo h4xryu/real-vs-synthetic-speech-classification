@@ -133,20 +133,7 @@ python examples/Rule-based/validation.py    # valid 점수
 
 터미널에 이렇게 나옵니다.
 
-```text
-files       120
-accuracy    0.xxxx
-macro_f1    0.xxxx
-
-label              precision    recall        f1   support
-original              ...
-...
-
-confusion matrix (행: 정답, 열: 예측)
-                      orig     TTS      VC  sovits
-original                ..      ..      ..      ..
-...
-```
+![Example](examples/example.png) 
 
 혼동 행렬의 행은 정답, 열은 예측입니다. 대각선이 맞힌 개수이고, 대각선 밖을 보면 어떤 라벨끼리 헷갈리는지 알 수 있습니다.
 

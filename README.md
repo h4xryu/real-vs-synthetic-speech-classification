@@ -141,45 +141,6 @@ python examples/Rule-based/validation.py    # valid 점수
 
 네 라벨을 각각 얼마나 맞혔는지(F1) 본 다음 그 넷의 평균입니다. 한 라벨만 잘 맞히고 나머지는 틀리면 점수가 낮아집니다. 그래서 네 종류를 고루 맞히는 편이 유리합니다. accuracy는 전체 중 몇 개를 맞혔는지입니다. 순위는 accuracy가 아니라 macro F1입니다.
 
-## 제출 규격
+## 제출  
 
-내는 것은 **폴더 하나를 묶은 zip**입니다. 폴더에는 실행 파일 `predict.py`와, 그것이 쓰는 코드·가중치 파일이 들어 있어야 합니다.
-
-```text
-20231234_홍길동/
-  predict.py          반드시 이 이름
-  model_weight.pt     학습해 둔 가중치 (있으면)
-  models.py ...       predict.py 가 import 하는 내 코드 (있으면)
-```
-
-조교는 이 폴더 안에서 아래 한 줄만 실행합니다.
-
-```bash
-python predict.py 목록.csv 예측.csv
-```
-
-- `목록.csv`: 테스트 목록. 열은 `path,speaker_id,sampling_rate,duration_sec`이고 **label 열은 없습니다.** 음성은 `목록.csv`가 있는 폴더 기준 `path` 위치에 있습니다.
-- `예측.csv`: 여기에 결과를 씁니다. 첫 줄은 `filename,pred_label`입니다.
-
-```csv
-filename,pred_label
-te_0001.flac,original
-te_0002.flac,TTS
-```
-
-| 열 이름        | 설명                                                                                                          |
-| -------------- | ------------------------------------------------------------------------------------------------------------- |
-| `filename`   | 음성 파일 이름만. 폴더 경로 없이 `te_0001.flac`                                                             |
-| `pred_label` | 맞힌 라벨. `original`, `TTS`, `voice_conversion`, `sovits` 중 하나. 철자와 대소문자까지 같아야 합니다 |
-
-지켜야 할 것:
-
-- `predict.py`는 **학습하지 않고** 저장한 가중치로 예측만 합니다. 학습은 미리 내 컴퓨터에서 끝내고 가중치 파일을 함께 넣으세요.
-- 가중치 파일은 `predict.py` 위치 기준으로 찾으세요. 예: `Path(__file__).resolve().parent / "model_weight.pt"`
-- 인터넷, `dataset/` 폴더, 다른 경로의 파일에 의존하면 안 됩니다. 필요한 건 전부 폴더 안에 넣으세요.
-
-예시의 `validation.py`는 이 규격을 지킵니다. 인자 두 개를 주면 점수 없이 예측 CSV만 씁니다. 그래서 `validation.py`를 `predict.py`로 이름만 바꿔 내면 됩니다.
-
-```bash
-python examples/DNN/validation.py dataset/valid.csv my_pred.csv
-```
+learnus 공지 참고. (추후 안내 예정)

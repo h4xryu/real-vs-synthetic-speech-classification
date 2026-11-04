@@ -25,13 +25,10 @@ python examples/학부용/dnn_training.py
 `dnn_training.py` 상단의 다음 리스트를 수정하면 비교할 조합을 바꿀 수 있습니다.
 
 ```python
-MODEL_NAMES = ["SmallCNN", "ResU2D_LC"]
+MODEL_NAMES = [ "ResU2D_LC"]
 LEARNING_RATES = [0.001, 0.0005]
 BATCH_SIZES = [16, 32]
 ```
-
-예를 들어 SmallCNN만 실행하려면 `MODEL_NAMES = ["SmallCNN"]`으로 바꿉니다.
-리스트 항목의 모든 조합이 세 개의 간단한 for문으로 실행됩니다.
 
 가장 좋은 valid macro-F1의 가중치는 `weights/`에 저장되고,
 설정별 결과는 `valid_results.csv`에 저장됩니다.

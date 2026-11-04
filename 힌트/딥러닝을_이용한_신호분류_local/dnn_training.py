@@ -55,7 +55,7 @@ def main():
     results = []
 
     # 실험 설정
-    for model_name in ["SmallCNN", "ResU2D_LC"]:
+    for model_name in ["ResU2D_LC"]:
         for mid_ch in [64, 32, 8]:
             for out_ch in [128, 64, 32]:
                 for lr in [0.001, 0.0005]:

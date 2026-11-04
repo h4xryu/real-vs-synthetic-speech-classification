@@ -8,7 +8,7 @@
 프로젝트 최상위 폴더에서:
 
 ```powershell
-python examples/학부용/dnn_training.py
+python dnn_training.py
 ```
 
 필요한 Python 패키지는 프로젝트 `requirements.txt`에 있습니다.

@@ -12,7 +12,7 @@ HERE = Path(__file__).resolve().parent
 PROJECT_ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 
-from models import ResU2D_LC, SmallCNN
+from models import ResU2D_LC
 from preprocessing import read_dataset
 from utils import LABELS, classification_metrics, print_confusion_matrix, set_seed
 
@@ -63,11 +63,7 @@ def main():
                         for seed in [0, 42, 123]:
                             for scheduler_name in ["none", "step", "cosine"]:
 
-                                # SmallCNN에는 채널 설정을 적용하지 않는다.
-                                if model_name == "SmallCNN" and (
-                                    mid_ch != 64 or out_ch != 128
-                                ):
-                                    continue
+                    
 
                                 print("\n" + "=" * 70)
                                 print(
@@ -79,15 +75,13 @@ def main():
                                 set_seed(seed)
 
                                 # 모델 생성
-                                if model_name == "SmallCNN":
-                                    model = SmallCNN(nOUT=len(LABELS))
-                                else:
-                                    model = ResU2D_LC(
+                                model = ResU2D_LC(
                                         nOUT=len(LABELS),
                                         in_ch=1,
                                         mid_ch=mid_ch,
                                         out_ch=out_ch,
                                     )
+                                    
 
                                 model = model.to(DEVICE)
 
